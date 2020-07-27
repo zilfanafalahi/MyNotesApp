@@ -1,18 +1,17 @@
-package com.example.mynotesapp
+package com.example.consumerapp
 
 import android.content.Intent
 import android.database.ContentObserver
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.mynotesapp.adapter.NoteAdapter
-import com.example.mynotesapp.database.DatabaseContract.NoteColumns.Companion.CONTENT_URI
-import com.example.mynotesapp.database.NoteHelper
-import com.example.mynotesapp.helper.MappingHelper
-import com.example.mynotesapp.model.Note
+import com.example.consumerapp.adapter.NoteAdapter
+import com.example.consumerapp.database.DatabaseContract.NoteColumns.Companion.CONTENT_URI
+import com.example.consumerapp.helper.MappingHelper
+import com.example.consumerapp.model.Note
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +21,6 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var adapter: NoteAdapter
-    private lateinit var noteHelper: NoteHelper
 
     companion object {
         private const val EXTRA_STATE = "EXTRA_STATE"
@@ -32,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        supportActionBar?.title = "Notes"
+        supportActionBar?.title = "Consumer Notes"
 
         rv_notes.layoutManager = LinearLayoutManager(this)
         rv_notes.setHasFixedSize(true)
@@ -43,9 +41,6 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this@MainActivity, NoteAddUpdateActivity::class.java)
             startActivityForResult(intent, NoteAddUpdateActivity.REQUEST_ADD)
         }
-
-        noteHelper = NoteHelper.getInstance(applicationContext)
-        noteHelper.open()
 
         // Content Provider
         val handlerThread = HandlerThread("DataObserver")
@@ -146,7 +141,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        noteHelper.close()
     }
 
     /**
